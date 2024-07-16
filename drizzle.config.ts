@@ -1,4 +1,4 @@
-import {defineConfig} from 'drizzle-kit'
+import { defineConfig } from 'drizzle-kit'
 
 export default defineConfig({
   schema: './src/server/db/schema.ts',
@@ -9,6 +9,6 @@ export default defineConfig({
     user: 'postgres',
     password: '123456',
     database: 'postgres',
-    ssl: false
-  }
+    ssl: false,
+  },
 })
