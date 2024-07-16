@@ -1,7 +1,6 @@
-// export {auth as middleware} from '~/auth'
-
 // middleware.js
 import { NextResponse } from 'next/server';
+// import { auth } from '~/auth';
 
 export async function middleware() {
   console.log('Middleware is running!');

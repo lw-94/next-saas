@@ -4,11 +4,12 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { trpcClient } from "../utils/trpcClient";
+
 import { db } from "@/server/db/db";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { auth } from "~/auth";
-import { trpcClient } from "../utils/trpcClient";
 
 export default function Home() {
   // 'use server'
@@ -22,6 +23,7 @@ export default function Home() {
 
   useEffect(() => {
     trpcClient.hello.query().then(console.log)
+    trpcClient.createApp.mutate().then(console.log)
   }, [])
 
   return (
