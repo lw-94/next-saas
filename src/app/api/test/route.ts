@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
-import { createUserSchema } from "~/src/server/db/validate-schema";
+import type { NextRequest } from 'next/server'
+import { createUserSchema } from '~/src/server/db/validate-schema'
 
 // import z from 'zod'
 
@@ -20,5 +20,5 @@ export function GET(request: NextRequest) {
     return Response.json({ error: data.error })
   }
 
-  return Response.json(data.data);
+  return Response.json(data.data)
 }

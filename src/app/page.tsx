@@ -1,15 +1,10 @@
 'use client'
 
-import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { trpcClient } from "../utils/trpcClient";
-
-import { db } from "@/server/db/db";
-import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
-import { auth } from "~/auth";
+import { useEffect } from 'react'
+import { trpcClient } from '../utils/trpcClient'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function Home() {
   // 'use server'
