@@ -1,12 +1,12 @@
-'use client'
+// 'use client'
 
-import { useEffect } from 'react'
-import { trpcClient } from '../utils/trpcClient'
+import { caller } from '../utils/trpcRouter'
+import { trpcClientReact } from '@/utils/trpcClient'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
-export default function Home() {
+export default async function Home() {
   // 'use server'
   // const users = await db.query.Users.findMany()
   // const users = await db.select().from(Users).where(eq(Users.id, 1))
@@ -16,10 +16,10 @@ export default function Home() {
   //   redirect("/api/auth/signin")
   // }
 
-  useEffect(() => {
-    trpcClient.hello.query().then(console.log)
-    trpcClient.createApp.mutate().then(console.log)
-  }, [])
+  // use client trpc
+  // const { data } = trpcClientReact.hello.useQuery()
+  // use server trpc, no need request
+  // const data = await caller.hello()
 
   return (
     <div className="h-screen flex justify-center items-center">

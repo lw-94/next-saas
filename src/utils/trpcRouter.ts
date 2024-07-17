@@ -37,4 +37,7 @@ export const trpcRouter = t.router({
   }),
 })
 
-export type TRPCRouterType = typeof trpcRouter
+export type TRPCRouter = typeof trpcRouter
+
+const serverCaller = t.createCallerFactory(trpcRouter)
+export const caller = serverCaller(createTRPCContext)

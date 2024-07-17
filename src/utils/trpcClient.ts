@@ -1,5 +1,6 @@
-import { createTRPCClient, httpBatchLink } from '@trpc/client'
-import type { TRPCRouterType } from './trpcRouter'
+import { createTRPCReact } from '@trpc/react-query'
+import { httpBatchLink } from '@trpc/client'
+import type { TRPCRouter } from './trpcRouter'
 
 function getBaseUrl() {
   if (typeof window !== 'undefined')
@@ -15,7 +16,9 @@ function getBaseUrl() {
   return `http://localhost:${process.env.PORT ?? 3000}`
 }
 
-export const trpcClient = createTRPCClient<TRPCRouterType>({
+export const trpcClientReact = createTRPCReact<TRPCRouter>()
+
+export const trpcClient = trpcClientReact.createClient({
   links: [
     httpBatchLink({
       url: `${getBaseUrl()}/api/trpc`,
