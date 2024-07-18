@@ -28,8 +28,8 @@ export default function UploadS3() {
   })
 
   return (
-    <div>
-      <div className="flex flex-col items-center h-screen">
+    <div className="h-screen flex flex-col items-center justify-center">
+      <div className="flex flex-col w-full max-w-xs gap-4">
         <Input
           type="file"
           onChange={(e) => {
