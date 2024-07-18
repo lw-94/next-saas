@@ -12,5 +12,5 @@ export async function middleware() {
 
 // 可选: 指定中间件适用的路径
 export const config = {
-  matcher: ['/dashboard'],
+  matcher: ['/'],
 }
