@@ -1,19 +1,11 @@
 import { initTRPC } from '@trpc/server'
-import { auth } from '~/auth'
+import { auth } from '@/auth'
 
-export async function createTRPCContext() {
-  const session = await auth()
-  // if (!session?.user) {
-  //   throw new Error('Not logged in')
-  // }
-  return {
-    // session
-  }
-}
+const t = initTRPC.create()
 
-const t = initTRPC.context<typeof createTRPCContext>().create()
+const { router, middleware, procedure, createCallerFactory } = t
 
-const checkAuthMiddleware = t.middleware(async ({ ctx, next }) => {
+const checkAuthMiddleware = middleware(async ({ ctx, next }) => {
   const session = await auth()
   if (!session?.user) {
     throw new Error('Not logged in')
@@ -26,18 +18,18 @@ const checkAuthMiddleware = t.middleware(async ({ ctx, next }) => {
   })
 })
 
-const authProcedure = t.procedure.use(checkAuthMiddleware)
+const authProcedure = procedure.use(checkAuthMiddleware)
 
-export const trpcRouter = t.router({
-  hello: t.procedure.query(async () => {
+export const trpcRouter = router({
+  hello: procedure.query(async () => {
     return `hello trpc`
   }),
-  createApp: authProcedure.mutation(async ({ ctx }) => {
-    return `${ctx.session.user?.name} create app`
+  testAuth: authProcedure.mutation(async ({ ctx }) => {
+    return `${ctx.session.user?.name} logged`
   }),
 })
 
 export type TRPCRouter = typeof trpcRouter
 
-const serverCaller = t.createCallerFactory(trpcRouter)
-export const caller = serverCaller(createTRPCContext)
+const serverCaller = createCallerFactory(trpcRouter)
+export const caller = serverCaller({})

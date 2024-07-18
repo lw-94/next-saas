@@ -1,6 +1,5 @@
 // middleware.js
 import { NextResponse } from 'next/server'
-// import { auth } from '~/auth';
 
 export async function middleware() {
   console.log('Middleware is running!')
@@ -13,5 +12,5 @@ export async function middleware() {
 
 // 可选: 指定中间件适用的路径
 export const config = {
-  matcher: ['/'],
+  matcher: ['/dashboard'],
 }

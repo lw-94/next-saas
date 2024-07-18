@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import type { Body, Meta, UppyFile } from '@uppy/core'
 import Uppy from '@uppy/core'
-import type { AwsS3MultipartOptions } from '@uppy/aws-s3'
 import AwsS3 from '@uppy/aws-s3'
-import { Input } from '~/src/components/ui/input'
-import { Button } from '~/src/components/ui/button'
+import { Progress } from './ui/progress'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 export default function UploadS3() {
   const [uppy] = useState(() => {
@@ -27,6 +27,12 @@ export default function UploadS3() {
     return u
   })
 
+  const [progress, setProgress] = useState(0)
+
+  uppy.on('progress', (progress) => {
+    setProgress(progress)
+  })
+
   return (
     <div className="h-screen flex flex-col items-center justify-center">
       <div className="flex flex-col w-full max-w-xs gap-4">
@@ -42,7 +48,13 @@ export default function UploadS3() {
           multiple
         />
         <Button onClick={() => uppy.upload()}>Upload</Button>
+        <Progress value={progress} />
       </div>
+
+      <span>
+        {progress}
+        %
+      </span>
     </div>
   )
 }

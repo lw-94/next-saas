@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { createUserSchema } from '~/src/server/db/validate-schema'
+import { createUserSchema } from '@/server/db/validate-schema'
 
 // import z from 'zod'
 

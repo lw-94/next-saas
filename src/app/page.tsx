@@ -1,5 +1,6 @@
 // 'use client'
 
+import Link from 'next/link'
 import { caller } from '../utils/trpcRouter'
 import { trpcClientReact } from '@/utils/trpcClient'
 import { Button } from '@/components/ui/button'
@@ -22,13 +23,16 @@ export default async function Home() {
   // const data = await caller.hello()
 
   return (
-    <div className="h-screen flex justify-center items-center">
+    <div className="h-screen flex flex-col justify-center items-center">
       <form className="w-full max-w-xl flex flex-col gap-4">
         <h1 className="text-center text-3xl font-bold">Create App</h1>
         <Input placeholder="Enter app name" />
         <Textarea placeholder="Enter app description" />
         <Button>Click Me</Button>
       </form>
+      <Link href="/dashboard" className="mt-4">
+        <Button>go dashboard</Button>
+      </Link>
     </div>
   )
 }

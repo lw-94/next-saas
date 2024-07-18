@@ -1,6 +1,6 @@
 // 'use client'
 
-import UploadS3 from '~/src/components/upload-s3'
+import UploadS3 from '@/components/upload-s3'
 
 export default function Dashboard() {
   return (
