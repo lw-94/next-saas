@@ -12,13 +12,14 @@ export const fileRoutes = router({
       fileSize: z.number(),
     }),
   ).mutation(async ({ ctx, input }) => {
-    console.log('🚀 ~ ).mutation ~ input:', input)
+    const dateStr = new Date().toISOString().split('T')[0]
+
     // 生成上传URL
     const signedUrl = await getSignedUrl(
       r2,
       new PutObjectCommand({
         Bucket: process.env.R2_BUCKET_NAME,
-        Key: `${new Date().getTime()}-${input.fileName}`,
+        Key: `${dateStr}/${input.fileName.replaceAll(' ', '_')}`,
       }),
       { expiresIn: 60 },
     )
