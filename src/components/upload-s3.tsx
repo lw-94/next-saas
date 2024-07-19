@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 
 export default function UploadS3() {
   const [uppy] = useState(() => {
+    // 只执行一次
     const u = new Uppy<any, any>().use(AwsS3, {
       shouldUseMultipart: false,
       getUploadParameters: async (file: UppyFile<Meta, Body>) => {
