@@ -1,6 +1,7 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import z from 'zod'
+import { db, files } from '@/server/db/schema'
 import { r2 } from '@/lib/r2'
 import { authProcedure, router } from '@/utils/trpcRouter'
 
@@ -26,5 +27,26 @@ export const fileRoutes = router({
 
     // 返回上传URL
     return { url: signedUrl, method: 'PUT' as const }
+  }),
+  saveFileToDb: authProcedure.input(
+    z.object({
+      name: z.string(),
+      type: z.string(),
+      path: z.string(),
+    }),
+  ).mutation(async ({ ctx, input }) => {
+    const { session } = ctx
+
+    const { name, type, path } = input
+    const url = new URL(path)
+
+    const file = await db.insert(files).values({
+      ...input,
+      path: url.pathname,
+      url: url.toString(),
+      userId: session.userId,
+      contentType: type,
+    }).returning() // 返回插入的数据
+    return file[0]
   }),
 })

@@ -5,10 +5,13 @@ import {
   primaryKey,
   text,
   timestamp,
+  uuid,
+  varchar,
 } from 'drizzle-orm/pg-core'
 import postgres from 'postgres'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import type { AdapterAccountType } from 'next-auth/adapters'
+import { relations } from 'drizzle-orm'
 
 const connectionString = 'postgres://postgres:123456@localhost:5432/postgres'
 const pool = postgres(connectionString, { max: 1 })
@@ -77,5 +80,24 @@ export const authenticators = pgTable('authenticator', {
 }, authenticator => ({
   compositePK: primaryKey({
     columns: [authenticator.userId, authenticator.credentialID],
+  }),
+}))
+
+export const files = pgTable('files', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  name: varchar('name', { length: 100 }).notNull(),
+  type: varchar('type', { length: 100 }).notNull(),
+  path: varchar('path', { length: 1024 }).notNull(),
+  url: varchar('url', { length: 1024 }).notNull(),
+  userId: text('user_id').notNull(),
+  contentType: varchar('content_type', { length: 100 }).notNull(),
+  createAt: timestamp('create_at', { mode: 'date' }).defaultNow(),
+  deleteAt: timestamp('delete_at', { mode: 'date' }),
+})
+
+export const filesRelations = relations(files, ({ one }) => ({
+  files: one(users, {
+    fields: [files.userId],
+    references: [users.id],
   }),
 }))

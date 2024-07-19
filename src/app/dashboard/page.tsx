@@ -5,6 +5,7 @@ import { SignOut } from '@/components/sign-out'
 
 export default async function Dashboard() {
   const session = await auth()
+  console.log('🚀 ~ Dashboard ~ session:', session)
 
   if (!session?.user) {
     redirect('/api/auth/signin')

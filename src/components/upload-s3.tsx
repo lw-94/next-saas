@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import type { Body, Meta, UppyFile } from '@uppy/core'
+import { useEffect, useState } from 'react'
+import type { Body, Meta, UploadResult, UppyFile } from '@uppy/core'
 import Uppy from '@uppy/core'
 import AwsS3 from '@uppy/aws-s3'
 import { Progress } from './ui/progress'
@@ -40,6 +40,23 @@ export default function UploadS3() {
   uppy.on('progress', (progress) => {
     setProgress(progress)
   })
+
+  useEffect(() => {
+    const completeFunc = (result: UploadResult<any, any>) => {
+      result.successful?.forEach((file) => {
+        trpcPureClient.file.saveFileToDb.mutate({
+          name: file.name!,
+          type: file.type,
+          path: file.uploadURL!,
+        })
+      })
+    }
+    uppy.on('complete', completeFunc)
+
+    return () => {
+      uppy.off('complete', completeFunc)
+    }
+  }, [uppy])
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
