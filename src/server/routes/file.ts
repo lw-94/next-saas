@@ -59,4 +59,8 @@ export const fileRoutes = router({
     })
     return result
   }),
+
+  getFileBaseUrl: authProcedure.query(async () => {
+    return process.env.R2_VIEW_BASE_URL
+  }),
 })
