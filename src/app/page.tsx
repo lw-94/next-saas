@@ -1,8 +1,4 @@
-// 'use client'
-
 import Link from 'next/link'
-import { caller } from '../utils/trpcRouter'
-import { trpcClientReact } from '@/utils/trpcClient'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -12,15 +8,6 @@ export default async function Home() {
   // const users = await db.query.Users.findMany()
   // const users = await db.select().from(Users).where(eq(Users.id, 1))
   // const session = await auth()
-
-  // if (!session?.user) {
-  //   redirect("/api/auth/signin")
-  // }
-
-  // use client trpc
-  // const { data } = trpcClientReact.hello.useQuery()
-  // use server trpc, no need request
-  // const data = await caller.hello()
 
   return (
     <div className="h-screen flex flex-col justify-center items-center">

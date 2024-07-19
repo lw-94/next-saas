@@ -15,6 +15,7 @@ export default async function Dashboard() {
       <h1>Dashboard</h1>
       <p>{session?.user?.name}</p>
       <SignOut />
+
       <UploadS3 />
     </div>
   )

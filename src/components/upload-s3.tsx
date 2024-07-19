@@ -7,6 +7,7 @@ import AwsS3 from '@uppy/aws-s3'
 import { Progress } from './ui/progress'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { trpcClient, trpcClientReact, trpcPureClient } from '@/utils/trpcClient'
 
 export default function UploadS3() {
   const [uppy] = useState(() => {
@@ -14,14 +15,20 @@ export default function UploadS3() {
     const u = new Uppy<any, any>().use(AwsS3, {
       shouldUseMultipart: false,
       getUploadParameters: async (file: UppyFile<Meta, Body>) => {
-        const data = await fetch('/api/upload', {
-          method: 'POST',
-          body: JSON.stringify({
-            name: file.name,
-            type: file.type,
-            size: file.size,
-          }),
-        }).then(res => res.json())
+        // const data = await fetch('/api/upload', {
+        //   method: 'POST',
+        //   body: JSON.stringify({
+        //     fileName: file.name,
+        //     fileType: file.type,
+        //     fileSize: file.size,
+        //   }),
+        // }).then(res => res.json())
+        // return data
+        const data = await trpcPureClient.file.upload.mutate({
+          fileName: file.name!,
+          fileType: file.type,
+          fileSize: file.size!,
+        })
         return data
       },
     })
