@@ -1,7 +1,9 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import z from 'zod'
-import { db, files } from '@/server/db/schema'
+import { desc } from 'drizzle-orm'
+import { files } from '@/server/db/schema'
+import { db } from '@/server/db/db'
 import { r2 } from '@/lib/r2'
 import { authProcedure, router } from '@/utils/trpcRouter'
 
@@ -28,6 +30,7 @@ export const fileRoutes = router({
     // 返回上传URL
     return { url: signedUrl, method: 'PUT' as const }
   }),
+
   saveFileToDb: authProcedure.input(
     z.object({
       name: z.string(),
@@ -48,5 +51,12 @@ export const fileRoutes = router({
       contentType: type,
     }).returning() // 返回插入的数据
     return file[0]
+  }),
+
+  listFiles: authProcedure.query(async () => {
+    const result = await db.query.files.findMany({
+      orderBy: [desc(files.createAt)],
+    })
+    return result
   }),
 })
