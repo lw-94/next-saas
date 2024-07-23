@@ -3,8 +3,9 @@
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import { signOut, useSession } from 'next-auth/react'
+import type { UploadResult } from '@uppy/core'
 import UploadBtnS3 from '@/components/upload-btn-s3'
-import { trpcClientReact } from '@/utils/trpcClient'
+import { trpcClientReact, trpcPureClient } from '@/utils/trpcClient'
 import { Button } from '@/components/ui/button'
 import { Dropzone } from '@/components/dropzone'
 import { cn } from '@/lib/utils'
@@ -16,12 +17,21 @@ import { usePasteFile } from '@/hooks/usePasteFile'
 export default function Dashboard() {
   const { uppy, progress, files: waitFiles } = useUppy()
 
-  // 要写在提前返回前
-  const { data: files, isPending, refetch: refetchFileList } = trpcClientReact.file.listFiles.useQuery()
+  // 状态要写在提前返回前
+  const { data: files, refetch: refetchFileList } = trpcClientReact.file.listFiles.useQuery()
   const { data: fileBaseUrl } = trpcClientReact.file.fileBaseUrl.useQuery()
 
-  useUppyEvent(uppy, 'complete', () => {
-    // 在useUppy中的监听事件之后
+  useUppyEvent(uppy, 'complete', (result: UploadResult<any, any>) => {
+    result.successful?.forEach((file) => {
+      trpcPureClient.file.saveFileToDb.mutate({
+        name: file.name!,
+        type: file.type,
+        path: file.uploadURL!,
+      })
+    })
+    // 上传成功后清空文件
+    uppy.clear()
+
     refetchFileList()
   })
 
@@ -34,6 +44,7 @@ export default function Dashboard() {
     },
   })
 
+  // auth check
   const { data: session, status } = useSession()
   switch (status) {
     case 'loading':
