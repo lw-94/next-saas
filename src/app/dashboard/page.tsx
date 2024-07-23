@@ -41,7 +41,7 @@ export default function Dashboard() {
 
       <Dropzone uppy={uppy}>
         {dragging => (
-          <ul className={cn('flex gap-4 p-4', dragging ? 'bg-red-300' : '')}>
+          <ul className={cn('flex my-4 gap-4 p-4 border rounded relative', dragging ? 'border' : '')}>
             {files?.map((file) => {
               const isImage = file.type.startsWith('image')
               return (
@@ -57,6 +57,7 @@ export default function Dashboard() {
                 </li>
               )
             })}
+            {dragging && <div className="absolute inset-0 bg-secondary/60 flex items-center justify-center">Drop file here to upload</div>}
           </ul>
         )}
       </Dropzone>
