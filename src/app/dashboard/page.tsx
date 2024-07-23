@@ -16,24 +16,8 @@ import { usePasteFile } from '@/hooks/usePasteFile'
 import { FileList } from '@/components/file-list'
 
 export default function Dashboard() {
-  const { uppy, progress, files: waitFiles } = useUppy()
-
   // 状态要写在提前返回前
-  const { data: files, refetch: refetchFileList } = trpcClientReact.file.listFiles.useQuery()
-
-  useUppyEvent(uppy, 'complete', (result: UploadResult<any, any>) => {
-    result.successful?.forEach((file) => {
-      trpcPureClient.file.saveFileToDb.mutate({
-        name: file.name!,
-        type: file.type,
-        path: file.uploadURL!,
-      })
-    })
-    // 上传成功后清空文件
-    uppy.clear()
-
-    refetchFileList()
-  })
+  const { uppy, progress, files: waitFiles } = useUppy()
 
   // 粘贴增加文件
   usePasteFile({
@@ -62,7 +46,7 @@ export default function Dashboard() {
       <Dropzone uppy={uppy}>
         {dragging => (
           <div className="relative p-4 border rounded">
-            <FileList files={files} />
+            <FileList uppy={uppy} />
             {dragging && <div className="absolute inset-0 bg-secondary/60 flex items-center justify-center">Drop file here to upload</div>}
           </div>
         )}

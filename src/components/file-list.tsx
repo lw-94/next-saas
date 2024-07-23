@@ -1,19 +1,29 @@
 import Image from 'next/image'
-import { trpcClientReact } from '@/utils/trpcClient'
-import type { files as Files } from '@/server/db/schema'
-
-type FilesType = typeof Files.$inferSelect
-
-type StringifiedFiles = {
-  [K in keyof typeof Files.$inferSelect]: K extends 'deleteAt' | 'createAt' ? string | null : FilesType[K]
-}
+import type { UploadResult, Uppy } from '@uppy/core'
+import { trpcClientReact, trpcPureClient } from '@/utils/trpcClient'
+import useUppyEvent from '@/hooks/useUppyEvent'
 
 export function FileList({
-  files,
+  uppy,
 }: {
-  files: StringifiedFiles[] | undefined
+  uppy: Uppy
 }) {
   const { data: fileBaseUrl } = trpcClientReact.file.fileBaseUrl.useQuery()
+  const { data: files, refetch: refetchFileList } = trpcClientReact.file.listFiles.useQuery()
+
+  useUppyEvent(uppy, 'complete', (result: UploadResult<any, any>) => {
+    result.successful?.forEach((file) => {
+      trpcPureClient.file.saveFileToDb.mutate({
+        name: file.name!,
+        type: file.type,
+        path: file.uploadURL!,
+      })
+    })
+    // 上传成功后清空文件
+    uppy.clear()
+
+    refetchFileList()
+  })
 
   return (
     <ul className="flex gap-4">
