@@ -1,17 +1,22 @@
 import React, { useRef, useState } from 'react'
 import type { Uppy } from '@uppy/core'
 
-export function Dropzone({ uppy, children }: {
+export function Dropzone({
+  uppy,
+  children,
+  ...divProps
+}: {
   uppy: Uppy
   children: React.ReactNode | ((dragging: boolean) => React.ReactNode)
-}) {
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>) {
   const [dragging, setDragging] = useState(false)
 
   // 使用useRef管理定时器
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   return (
     <div
-      onDragEnter={(e) => {
+      {...divProps}
+      onDragEnter={() => {
         setDragging(true)
       }}
       onDragOver={(e) => {
@@ -21,7 +26,7 @@ export function Dropzone({ uppy, children }: {
           timer.current = null
         }
       }}
-      onDragLeave={(e) => {
+      onDragLeave={() => {
         if (timer.current) {
           clearTimeout(timer.current)
           timer.current = null

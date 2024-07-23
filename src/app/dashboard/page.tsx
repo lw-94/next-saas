@@ -1,8 +1,7 @@
 'use client'
 
 import { redirect } from 'next/navigation'
-import Image from 'next/image'
-import { signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import type { UploadResult } from '@uppy/core'
 import UploadBtnS3 from '@/components/upload-btn-s3'
 import { trpcClientReact, trpcPureClient } from '@/utils/trpcClient'
@@ -39,11 +38,8 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col items-center">
-      <h1>Dashboard</h1>
-      <p>{session?.user?.name}</p>
-      <Button onClick={() => signOut()}>Signout</Button>
-
-      <Dropzone uppy={uppy}>
+      <UploadBtnS3 uppy={uppy} />
+      <Dropzone uppy={uppy} className="my-4">
         {dragging => (
           <div className="relative p-4 border rounded">
             <FileList uppy={uppy} />
@@ -53,7 +49,6 @@ export default function Dashboard() {
       </Dropzone>
 
       <div className="flex flex-col items-center justify-center gap-4 w-full max-w-xl">
-        <UploadBtnS3 uppy={uppy} />
         <Button onClick={() => uppy.upload()}>Upload</Button>
         <Progress value={progress} />
         <span>
