@@ -26,7 +26,7 @@ export function FileList({
   })
 
   return (
-    <ul className="flex gap-4">
+    <ul className="flex gap-4 flex-wrap">
       {files?.map((file) => {
         const isImage = file.type.startsWith('image')
         return (

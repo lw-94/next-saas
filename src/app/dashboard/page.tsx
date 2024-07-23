@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress'
 import useUppyEvent from '@/hooks/useUppyEvent'
 import { usePasteFile } from '@/hooks/usePasteFile'
 import { FileList } from '@/components/file-list'
+import { UploadPreview } from '@/components/upload-preview'
 
 export default function Dashboard() {
   // 状态要写在提前返回前
@@ -39,6 +40,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col items-center">
       <UploadBtnS3 uppy={uppy} />
+
       <Dropzone uppy={uppy} className="my-4">
         {dragging => (
           <div className="relative p-4 border rounded">
@@ -49,13 +51,15 @@ export default function Dashboard() {
       </Dropzone>
 
       <div className="flex flex-col items-center justify-center gap-4 w-full max-w-xl">
-        <Button onClick={() => uppy.upload()}>Upload</Button>
+        {/* <Button onClick={() => uppy.upload()}>Upload</Button> */}
         <Progress value={progress} />
         <span>
           {progress}
           %
         </span>
       </div>
+
+      <UploadPreview uppy={uppy} />
 
       <div>
         <h3>Wait for upload</h3>
