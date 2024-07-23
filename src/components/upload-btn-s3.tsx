@@ -25,6 +25,8 @@ export default function UploadS3({ uppy }: { uppy: Uppy }) {
             Array.from(e.target.files).forEach((file) => {
               uppy.addFile({ name: file.name, data: file })
             })
+            // 清空value，防止选择重复文件不触发onchange
+            e.target.value = ''
           }
         }}
         multiple
