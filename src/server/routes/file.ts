@@ -3,7 +3,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import z from 'zod'
 import { desc } from 'drizzle-orm'
 import { files } from '@/server/db/schema'
-import { db } from '@/server/db/db'
+import { dbClient } from '@/server/db/db'
 import { r2 } from '@/lib/r2'
 import { authProcedure, router } from '@/utils/trpcRouter'
 
@@ -43,7 +43,7 @@ export const fileRoutes = router({
     const { name, type, path } = input
     const url = new URL(path)
 
-    const file = await db.insert(files).values({
+    const file = await dbClient.insert(files).values({
       ...input,
       path: url.pathname,
       url: url.toString(),
@@ -54,7 +54,7 @@ export const fileRoutes = router({
   }),
 
   listFiles: authProcedure.query(async () => {
-    const result = await db.query.files.findMany({
+    const result = await dbClient.query.files.findMany({
       orderBy: [desc(files.createAt)],
     })
     return result

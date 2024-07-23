@@ -13,13 +13,13 @@ import { useUppy } from '@/hooks/useUppy'
 import { Progress } from '@/components/ui/progress'
 import useUppyEvent from '@/hooks/useUppyEvent'
 import { usePasteFile } from '@/hooks/usePasteFile'
+import { FileList } from '@/components/file-list'
 
 export default function Dashboard() {
   const { uppy, progress, files: waitFiles } = useUppy()
 
   // 状态要写在提前返回前
   const { data: files, refetch: refetchFileList } = trpcClientReact.file.listFiles.useQuery()
-  const { data: fileBaseUrl } = trpcClientReact.file.fileBaseUrl.useQuery()
 
   useUppyEvent(uppy, 'complete', (result: UploadResult<any, any>) => {
     result.successful?.forEach((file) => {
@@ -61,24 +61,10 @@ export default function Dashboard() {
 
       <Dropzone uppy={uppy}>
         {dragging => (
-          <ul className={cn('flex my-4 gap-4 p-4 border rounded relative', dragging ? 'border' : '')}>
-            {files?.map((file) => {
-              const isImage = file.type.startsWith('image')
-              return (
-                <li key={file.id} className="w-40 h-40 border flex items-center justify-center">
-                  {isImage
-                    ? (
-                        <img
-                          src={`${fileBaseUrl}${file.path}`}
-                          alt={file.name}
-                        />
-                      )
-                    : <Image src="/unknown-file.png" alt="unknown-file" width={100} height={100} />}
-                </li>
-              )
-            })}
+          <div className="relative p-4 border rounded">
+            <FileList files={files} />
             {dragging && <div className="absolute inset-0 bg-secondary/60 flex items-center justify-center">Drop file here to upload</div>}
-          </ul>
+          </div>
         )}
       </Dropzone>
 
