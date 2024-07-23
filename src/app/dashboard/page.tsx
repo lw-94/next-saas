@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { useUppy } from '@/hooks/useUppy'
 import { Progress } from '@/components/ui/progress'
 import useUppyEvent from '@/hooks/useUppyEvent'
+import { usePasteFile } from '@/hooks/usePasteFile'
 
 export default function Dashboard() {
   const { uppy, progress, files: waitFiles } = useUppy()
@@ -23,6 +24,15 @@ export default function Dashboard() {
   useUppyEvent(uppy, 'complete', () => {
     // 在useUppy中的监听事件之后
     refetchFileList()
+  })
+
+  // 粘贴增加文件
+  usePasteFile({
+    onFilePaste(files) {
+      files.forEach((file) => {
+        uppy.addFile({ name: file.name, data: file })
+      })
+    },
   })
 
   const { data: session, status } = useSession()
