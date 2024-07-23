@@ -1,13 +1,24 @@
 'use client'
 
 import type Uppy from '@uppy/core'
+import { Plus } from 'lucide-react'
+import { useRef } from 'react'
+import { Button } from './ui/button'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 
 export default function UploadS3({ uppy }: { uppy: Uppy }) {
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const onBtnClick = () => {
+    inputRef.current?.click()
+  }
+
   return (
-    <div className="flex flex-col w-full max-w-xs gap-4">
+    <>
+      <Button variant="ghost" onClick={onBtnClick}>
+        <Plus />
+      </Button>
       <Input
+        ref={inputRef}
         type="file"
         onChange={(e) => {
           if (e.target.files) {
@@ -17,8 +28,8 @@ export default function UploadS3({ uppy }: { uppy: Uppy }) {
           }
         }}
         multiple
+        className="fixed left-[-10000px]"
       />
-      <Button onClick={() => uppy.upload()}>Upload</Button>
-    </div>
+    </>
   )
 }

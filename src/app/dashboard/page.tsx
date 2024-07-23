@@ -3,8 +3,7 @@
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import { signOut, useSession } from 'next-auth/react'
-import { useEffect } from 'react'
-import UploadS3 from '@/components/upload-s3'
+import UploadBtnS3 from '@/components/upload-btn-s3'
 import { trpcClientReact } from '@/utils/trpcClient'
 import { Button } from '@/components/ui/button'
 import { Dropzone } from '@/components/dropzone'
@@ -72,8 +71,9 @@ export default function Dashboard() {
         )}
       </Dropzone>
 
-      <div className="flex flex-col items-center justify-center gap-4">
-        <UploadS3 uppy={uppy} />
+      <div className="flex flex-col items-center justify-center gap-4 w-full max-w-xl">
+        <UploadBtnS3 uppy={uppy} />
+        <Button onClick={() => uppy.upload()}>Upload</Button>
         <Progress value={progress} />
         <span>
           {progress}
