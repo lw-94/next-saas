@@ -10,10 +10,11 @@ function FileItem({
   isImage: boolean
 }) {
   return (
-    <div className="w-40 h-40 border flex items-center justify-center">
+    <div className="w-80 h-80 border flex items-center justify-center">
       {isImage
         ? (
             <img
+              className="max-h-full max-w-full"
               src={url}
               alt={name}
             />

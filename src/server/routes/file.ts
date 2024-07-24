@@ -1,7 +1,7 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import z from 'zod'
-import { desc } from 'drizzle-orm'
+import { and, desc, sql } from 'drizzle-orm'
 import { files } from '@/server/db/schema'
 import { dbClient } from '@/server/db/db'
 import { r2 } from '@/lib/r2'
@@ -55,12 +55,42 @@ export const fileRoutes = router({
 
   listFiles: authProcedure.query(async () => {
     const result = await dbClient.query.files.findMany({
-      orderBy: [desc(files.createAt)],
+      orderBy: [desc(files.createdAt)],
     })
     return result
   }),
 
   fileBaseUrl: authProcedure.query(async () => {
     return process.env.R2_VIEW_BASE_URL
+  }),
+
+  // cursor query 更高效
+  infiniteQueryFiles: authProcedure.input(z.object({
+    cursor: z.object({
+      id: z.string(),
+      createdAt: z.string(),
+    }).optional(),
+    limit: z.number().default(10),
+  })).query(async ({ input }) => {
+    const { cursor, limit } = input
+
+    const result = await dbClient
+      .select()
+      .from(files)
+      .limit(limit)
+      .where(
+        cursor ? sql`("files"."created_at", "files"."id") < (${new Date(cursor.createdAt).toISOString()}, ${cursor.id})` : undefined,
+      )
+      .orderBy(desc(files.createdAt))
+
+    return {
+      items: result,
+      nextCursor: result.length > 0
+        ? {
+            id: result[result.length - 1].id,
+            createdAt: result[result.length - 1].createdAt!,
+          }
+        : null,
+    }
   }),
 })

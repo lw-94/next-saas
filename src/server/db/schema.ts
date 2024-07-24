@@ -1,5 +1,6 @@
 import {
   boolean,
+  index,
   integer,
   pgTable,
   primaryKey,
@@ -91,9 +92,11 @@ export const files = pgTable('files', {
   url: varchar('url', { length: 1024 }).notNull(),
   userId: text('user_id').notNull(),
   contentType: varchar('content_type', { length: 100 }).notNull(),
-  createAt: timestamp('create_at', { mode: 'date' }).defaultNow(),
-  deleteAt: timestamp('delete_at', { mode: 'date' }),
-})
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
+  deletedAt: timestamp('deleted_at', { mode: 'date' }),
+}, file => ({
+  cursorIdx: index('cursor_idx').on(file.createdAt, file.id), // 复合索引,防止只用createdAt时间相同引发问题
+}))
 
 export const filesRelations = relations(files, ({ one }) => ({
   files: one(users, {
