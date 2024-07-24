@@ -10,17 +10,15 @@ function FileItem({
   isImage: boolean
 }) {
   return (
-    <div className="w-80 h-80 border flex items-center justify-center">
-      {isImage
-        ? (
-            <img
-              className="max-h-full max-w-full"
-              src={url}
-              alt={name}
-            />
-          )
-        : <Image src="/unknown-file.png" alt="unknown-file" width={100} height={100} />}
-    </div>
+    isImage
+      ? (
+          <img
+            className="max-h-full max-w-full"
+            src={url}
+            alt={name}
+          />
+        )
+      : <Image src="/unknown-file.png" alt="unknown-file" width={100} height={100} />
   )
 }
 

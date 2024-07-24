@@ -50,7 +50,9 @@ export function UploadPreview({
                   <ChevronLeft />
                 </Button>
 
-                <LocalFileItem file={file.data as File} />
+                <div className="w-80 h-80 border flex items-center justify-center">
+                  <LocalFileItem file={file.data as File} />
+                </div>
 
                 <Button variant="outline" size="icon" onClick={toRight}>
                   <ChevronRight />

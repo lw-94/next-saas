@@ -1,7 +1,7 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import z from 'zod'
-import { and, desc, sql } from 'drizzle-orm'
+import { and, desc, eq, isNull, sql } from 'drizzle-orm'
 import { files } from '@/server/db/schema'
 import { dbClient } from '@/server/db/db'
 import { r2 } from '@/lib/r2'
@@ -74,12 +74,19 @@ export const fileRoutes = router({
   })).query(async ({ input }) => {
     const { cursor, limit } = input
 
+    const deletedAtFilter = isNull(files.deletedAt) // 过滤已删除的文件
+
     const result = await dbClient
       .select()
       .from(files)
       .limit(limit)
       .where(
-        cursor ? sql`("files"."created_at", "files"."id") < (${new Date(cursor.createdAt).toISOString()}, ${cursor.id})` : undefined,
+        cursor
+          ? and(
+            sql`("files"."created_at", "files"."id") < (${new Date(cursor.createdAt).toISOString()}, ${cursor.id})`,
+            deletedAtFilter,
+          )
+          : deletedAtFilter,
       )
       .orderBy(desc(files.createdAt))
 
@@ -92,5 +99,16 @@ export const fileRoutes = router({
           }
         : null,
     }
+  }),
+
+  deleteFile: authProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    // const { session } = ctx
+    const result = await dbClient
+      .update(files)
+      .set({
+        deletedAt: new Date(),
+      })
+      .where(eq(files.id, input))
+    return result
   }),
 })
