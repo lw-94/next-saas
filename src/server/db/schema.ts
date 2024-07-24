@@ -84,7 +84,7 @@ export const authenticators = pgTable('authenticator', {
 }))
 
 export const files = pgTable('files', {
-  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  id: uuid('id').primaryKey().notNull().defaultRandom(), // 使用uuid，防止用户通过自增id猜测出文件
   name: varchar('name', { length: 100 }).notNull(),
   type: varchar('type', { length: 100 }).notNull(),
   path: varchar('path', { length: 1024 }).notNull(),

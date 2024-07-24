@@ -49,7 +49,7 @@ export function UploadPreview({
                 <Button variant="outline" size="icon" onClick={toLeft}>
                   <ChevronLeft />
                 </Button>
-                <div key={file.id} className="w-40 h-40 border flex items-center justify-center">
+                <div className="w-40 h-40 border flex items-center justify-center">
                   {isImage
                     ? (
                         <img
