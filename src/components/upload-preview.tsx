@@ -2,6 +2,7 @@ import Image from 'next/image'
 import type { Uppy } from '@uppy/core'
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
 import useUppyState from '@/hooks/useUppyState'
@@ -76,8 +77,9 @@ export function UploadPreview({
               >
                 Remove this
               </Button>
-              <Button onClick={() => {
-                uppy.upload()
+              <Button onClick={async () => {
+                await uppy.upload()
+                toast.success('Upload success')
                 clear()
               }}
               >

@@ -46,7 +46,6 @@ export default function Dashboard() {
       </Dropzone>
 
       <div className="flex flex-col items-center justify-center gap-4 w-full max-w-xl">
-        {/* <Button onClick={() => uppy.upload()}>Upload</Button> */}
         <Progress value={progress} />
         <span>
           {progress}
