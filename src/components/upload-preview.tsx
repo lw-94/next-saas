@@ -1,10 +1,10 @@
-import Image from 'next/image'
 import type { Uppy } from '@uppy/core'
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
+import { LocalFileItem } from './file-item'
 import useUppyState from '@/hooks/useUppyState'
 
 export function UploadPreview({
@@ -17,7 +17,6 @@ export function UploadPreview({
 
   const [showIdx, setShowIdx] = useState(0)
   const file = files[showIdx]
-  const isImage = file?.type.startsWith('image')
 
   const toLeft = () => {
     if (showIdx === 0) {
@@ -50,16 +49,9 @@ export function UploadPreview({
                 <Button variant="outline" size="icon" onClick={toLeft}>
                   <ChevronLeft />
                 </Button>
-                <div className="w-40 h-40 border flex items-center justify-center">
-                  {isImage
-                    ? (
-                        <img
-                          src={URL.createObjectURL(file.data)}
-                          alt={file.name}
-                        />
-                      )
-                    : <Image src="/unknown-file.png" alt="unknown-file" width={100} height={100} />}
-                </div>
+
+                <LocalFileItem file={file.data as File} />
+
                 <Button variant="outline" size="icon" onClick={toRight}>
                   <ChevronRight />
                 </Button>

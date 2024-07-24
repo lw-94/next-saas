@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import type { UploadResult, Uppy } from '@uppy/core'
+import { RemoteFileItem } from './file-item'
 import { trpcClientReact, trpcPureClient } from '@/utils/trpcClient'
 import useUppyEvent from '@/hooks/useUppyEvent'
 
@@ -26,22 +26,17 @@ export function FileList({
   })
 
   return (
-    <ul className="flex gap-4 flex-wrap justify-center">
+    <div className="flex gap-4 flex-wrap justify-center">
       {files?.map((file) => {
-        const isImage = file.type.startsWith('image')
         return (
-          <li key={file.id} className="w-40 h-40 border flex items-center justify-center">
-            {isImage
-              ? (
-                  <img
-                    src={`${fileBaseUrl}${file.path}`}
-                    alt={file.name}
-                  />
-                )
-              : <Image src="/unknown-file.png" alt="unknown-file" width={100} height={100} />}
-          </li>
+          <RemoteFileItem
+            key={file.id}
+            url={`${fileBaseUrl}${file.path}`}
+            name={file.name}
+            type={file.type}
+          />
         )
       })}
-    </ul>
+    </div>
   )
 }
