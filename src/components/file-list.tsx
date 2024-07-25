@@ -1,7 +1,7 @@
 import type { UploadResult, Uppy } from '@uppy/core'
 import { RemoteFileItem } from './file-item'
 import { Button } from './ui/button'
-import { DeleteFile } from './file-item-action'
+import { CopyFileUrl, DeleteFile } from './file-item-action'
 import { trpcClientReact, trpcPureClient } from '@/utils/trpcClient'
 import useUppyEvent from '@/hooks/useUppyEvent'
 
@@ -79,15 +79,17 @@ export function FileList({
     <>
       <div className="flex gap-4 flex-wrap justify-center">
         {files?.map((file) => {
+          const url = `${fileBaseUrl}${file.path}`
           return (
             <div key={file.id} className="relative w-80 h-80 border flex items-center justify-center">
               <RemoteFileItem
-                url={`${fileBaseUrl}${file.path}`}
+                url={url}
                 name={file.name}
                 type={file.type}
               />
               <div className="absolute inset-0 flex justify-center items-center bg-background/60 opacity-0 hover:opacity-100 transition-opacity">
                 <DeleteFile fileId={file.id} onDeleteSuccess={updateFileList} />
+                <CopyFileUrl url={url} />
               </div>
             </div>
           )
