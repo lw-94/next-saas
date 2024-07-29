@@ -79,7 +79,8 @@ export function FileList({
     <>
       <div className="flex gap-4 flex-wrap justify-center">
         {files?.map((file) => {
-          const url = `${fileBaseUrl}${file.path}`
+          // const url = `${fileBaseUrl}${file.path}`
+          const url = `/image/${file.id}`
           return (
             <div key={file.id} className="relative w-80 h-80 border flex items-center justify-center">
               <RemoteFileItem
