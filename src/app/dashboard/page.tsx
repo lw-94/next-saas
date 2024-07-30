@@ -9,6 +9,8 @@ import { Progress } from '@/components/ui/progress'
 import { usePasteFile } from '@/hooks/usePasteFile'
 import { FileList } from '@/components/file-list'
 import { UploadPreview } from '@/components/upload-preview'
+import { ThemeButton } from '@/components/theme-button'
+import { Boxes } from '@/components/ui/background-boxes'
 
 export default function Dashboard() {
   // 状态要写在提前返回前
@@ -34,7 +36,11 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col items-center">
-      <UploadBtnS3 uppy={uppy} />
+      {/* <Boxes /> */}
+      <div>
+        <UploadBtnS3 uppy={uppy} />
+        <ThemeButton />
+      </div>
 
       <Dropzone uppy={uppy} className="my-4">
         {dragging => (

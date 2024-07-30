@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { TRPCProvider } from './trpcProvider'
 import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,10 +20,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Toaster richColors position="top-right" />
-        <TRPCProvider>
-          {children}
-        </TRPCProvider>
+        <ThemeProvider>
+          <Toaster richColors position="top-right" />
+          <TRPCProvider>
+            {children}
+          </TRPCProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
