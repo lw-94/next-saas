@@ -15,7 +15,7 @@ export async function GET(
 
   const command = new GetObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME,
-    Key: file.path.slice(1),
+    Key: decodeURIComponent(file.path.slice(1)), // 解码，防止中文路径key找不到报错
   })
   const resp = await r2.send(command)
 
@@ -28,9 +28,9 @@ export async function GET(
 
   image.resize({
     width: 320,
-  })
+  }).webp()
 
-  const buffer = await image.webp().toBuffer()
+  const buffer = await image.toBuffer()
 
   return new Response(buffer, {
     headers: {

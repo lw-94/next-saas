@@ -40,7 +40,7 @@ export const fileRoutes = router({
   ).mutation(async ({ ctx, input }) => {
     const { session } = ctx
 
-    const { name, type, path } = input
+    const { type, path } = input
     const url = new URL(path)
 
     const file = await dbClient.insert(files).values({
