@@ -9,4 +9,4 @@ export const trpcRouter = router({
 export type TRPCRouter = typeof trpcRouter
 
 const serverCaller = createCallerFactory(trpcRouter)
-export const typeServerCaller = serverCaller({})
+export const trpcServerCaller = serverCaller({})
