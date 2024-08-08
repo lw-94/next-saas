@@ -3,7 +3,7 @@ import type { Body, Meta, State, UppyFile } from '@uppy/core'
 import Uppy from '@uppy/core'
 import AwsS3 from '@uppy/aws-s3'
 import useUppyState from './useUppyState'
-import { trpcPureClient } from '@/utils/trpcClient'
+import { trpcClientPure } from '@/utils/trpcClient'
 
 export function useUppy() {
   const [uppy] = useState(() => {
@@ -20,7 +20,7 @@ export function useUppy() {
         //   }),
         // }).then(res => res.json())
         // return data
-        const data = await trpcPureClient.file.upload.mutate({
+        const data = await trpcClientPure.file.upload.mutate({
           fileName: file.name!,
           fileType: file.type,
           fileSize: file.size!,

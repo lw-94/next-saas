@@ -36,7 +36,7 @@ export default async function DashboardLayout({
           </div>
         </div>
       </nav>
-      <main>
+      <main className="h-[calc(100vh-5rem)]">
         <SessionProvider>{children}</SessionProvider>
       </main>
     </>

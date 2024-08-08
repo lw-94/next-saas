@@ -68,8 +68,8 @@ export const verificationTokens = pgTable('verificationToken', {
 }))
 
 export const authenticators = pgTable('authenticator', {
-  credentialID: text('credentialID').notNull().unique(),
-  userId: text('userId')
+  credentialId: text('credential_id').notNull().unique(),
+  userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   providerAccountId: text('providerAccountId').notNull(),
@@ -80,10 +80,11 @@ export const authenticators = pgTable('authenticator', {
   transports: text('transports'),
 }, authenticator => ({
   compositePK: primaryKey({
-    columns: [authenticator.userId, authenticator.credentialID],
+    columns: [authenticator.userId, authenticator.credentialId],
   }),
 }))
 
+//
 export const files = pgTable('files', {
   id: uuid('id').primaryKey().notNull().defaultRandom(), // 使用uuid，防止用户通过自增id猜测出文件
   name: varchar('name', { length: 100 }).notNull(),
@@ -94,13 +95,42 @@ export const files = pgTable('files', {
   contentType: varchar('content_type', { length: 100 }).notNull(),
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
   deletedAt: timestamp('deleted_at', { mode: 'date' }),
+  appId: uuid('app_id').notNull(),
 }, file => ({
   cursorIdx: index('cursor_idx').on(file.createdAt, file.id), // 复合索引,防止只用createdAt时间相同引发问题
 }))
 
+export const apps = pgTable('app', {
+  id: uuid('id').primaryKey().notNull(), // 使用uuid，防止用户通过自增id猜测出文件
+  name: varchar('name', { length: 100 }).notNull(),
+  description: varchar('description', { length: 500 }),
+  userId: text('user_id').notNull(),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
+  deletedAt: timestamp('deleted_at', { mode: 'date' }),
+  // storageId: integer('storage_id'),
+})
+
+// relations
+export const usersRelations = relations(users, ({ many }) => ({
+  files: many(files),
+  apps: many(apps),
+}))
+
 export const filesRelations = relations(files, ({ one }) => ({
-  files: one(users, {
+  user: one(users, {
     fields: [files.userId],
     references: [users.id],
   }),
+  app: one(apps, {
+    fields: [files.appId],
+    references: [apps.id],
+  }),
+}))
+
+export const appsRelations = relations(apps, ({ one, many }) => ({
+  user: one(users, {
+    fields: [apps.userId],
+    references: [users.id],
+  }),
+  files: many(files),
 }))

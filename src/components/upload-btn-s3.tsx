@@ -14,7 +14,7 @@ export default function UploadS3({ uppy }: { uppy: Uppy }) {
 
   return (
     <>
-      <Button variant="ghost" onClick={onBtnClick}>
+      <Button variant="outline" onClick={onBtnClick}>
         <Plus />
       </Button>
       <Input

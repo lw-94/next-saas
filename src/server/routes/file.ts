@@ -14,7 +14,7 @@ export const fileRoutes = router({
       fileType: z.string(),
       fileSize: z.number(),
     }),
-  ).mutation(async ({ ctx, input }) => {
+  ).mutation(async ({ input }) => {
     const dateStr = new Date().toISOString().split('T')[0]
 
     // 生成上传URL
@@ -36,6 +36,7 @@ export const fileRoutes = router({
       name: z.string(),
       type: z.string(),
       path: z.string(),
+      appId: z.string(),
     }),
   ).mutation(async ({ ctx, input }) => {
     const { session } = ctx
@@ -72,6 +73,7 @@ export const fileRoutes = router({
       id: z.string(),
       createdAt: z.string(),
     }).optional(),
+    appId: z.string(),
     limit: z.number().default(10),
   })).query(async ({ ctx, input }) => {
     const { cursor, limit } = input
@@ -79,6 +81,7 @@ export const fileRoutes = router({
 
     const deletedAtFilter = isNull(files.deletedAt) // 过滤已删除的文件
     const userFilter = eq(files.userId, session.userId) // 过滤不属于当前用户的文件
+    const appFilter = eq(files.appId, input.appId) // 过滤不属于当前应用的文件
 
     const result = await dbClient
       .select()
@@ -90,8 +93,9 @@ export const fileRoutes = router({
             sql`("files"."created_at", "files"."id") < (${new Date(cursor.createdAt).toISOString()}, ${cursor.id})`,
             deletedAtFilter,
             userFilter,
+            appFilter,
           )
-          : and(deletedAtFilter, userFilter),
+          : and(deletedAtFilter, userFilter, appFilter),
       )
       .orderBy(desc(files.createdAt))
 
@@ -106,8 +110,7 @@ export const fileRoutes = router({
     }
   }),
 
-  deleteFile: authProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
-    // const { session } = ctx
+  deleteFile: authProcedure.input(z.string()).mutation(async ({ input }) => {
     const result = await dbClient
       .update(files)
       .set({

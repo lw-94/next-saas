@@ -1,4 +1,5 @@
 import { createTRPCReact } from '@trpc/react-query'
+import type { CreateTRPCClientOptions } from '@trpc/client'
 import { createTRPCClient, httpBatchLink } from '@trpc/client'
 import type { TRPCRouter } from '@/server/router'
 
@@ -25,7 +26,8 @@ const opt = {
       url: `${getBaseUrl()}/api/trpc`,
     }),
   ],
-}
+} satisfies CreateTRPCClientOptions<TRPCRouter>
+
 export const trpcClient = trpcClientReact.createClient(opt)
 
-export const trpcPureClient = createTRPCClient<TRPCRouter>(opt)
+export const trpcClientPure = createTRPCClient<TRPCRouter>(opt)

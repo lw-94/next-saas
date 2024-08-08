@@ -12,7 +12,11 @@ import { FileList } from '@/components/file-list'
 import { UploadPreview } from '@/components/upload-preview'
 import { ThemeButton } from '@/components/theme-button'
 
-export default function Dashboard() {
+export default function AppPage({
+  params: { id: appId },
+}: {
+  params: { id: string }
+}) {
   // 状态要写在提前返回前
   const { uppy, progress, files: waitFiles } = useUppy()
 
@@ -36,7 +40,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col items-center">
-      <div>
+      <div className="flex items-center">
         <UploadBtnS3 uppy={uppy} />
         <ThemeButton />
         <Link href="/dashboard/a">go a</Link>
@@ -45,7 +49,7 @@ export default function Dashboard() {
       <Dropzone uppy={uppy} className="my-4">
         {dragging => (
           <div className="relative p-4 border rounded">
-            <FileList uppy={uppy} />
+            <FileList uppy={uppy} appId={appId} />
             {dragging && <div className="absolute inset-0 bg-secondary/60 flex items-center justify-center">Drop file here to upload</div>}
           </div>
         )}

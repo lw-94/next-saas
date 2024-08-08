@@ -2,16 +2,19 @@ import type { UploadResult, Uppy } from '@uppy/core'
 import { RemoteFileItem } from './file-item'
 import { Button } from './ui/button'
 import { CopyFileUrl, DeleteFile } from './file-item-action'
-import { trpcClientReact, trpcPureClient } from '@/utils/trpcClient'
+import { trpcClientPure, trpcClientReact } from '@/utils/trpcClient'
 import useUppyEvent from '@/hooks/useUppyEvent'
 
 export function FileList({
   uppy,
+  appId,
 }: {
   uppy: Uppy
+  appId: string
 }) {
   const queryKey = {
     limit: 3,
+    appId,
   }
   const { data, fetchNextPage } = trpcClientReact.file.infiniteQueryFiles.useInfiniteQuery(queryKey, {
     getNextPageParam: lastPage => lastPage.nextCursor,
@@ -23,10 +26,11 @@ export function FileList({
 
   useUppyEvent(uppy, 'complete', (result: UploadResult<any, any>) => {
     result.successful?.forEach((file) => {
-      trpcPureClient.file.saveFileToDb.mutate({
+      trpcClientPure.file.saveFileToDb.mutate({
         name: file.name!,
         type: file.type,
         path: file.uploadURL!,
+        appId,
       }).then((resp) => {
         // 更新文件列表
         utils.file.infiniteQueryFiles.setInfiniteData(queryKey, (prev) => {
