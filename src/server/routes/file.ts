@@ -53,8 +53,10 @@ export const fileRoutes = router({
     return file[0]
   }),
 
-  listFiles: authProcedure.query(async () => {
+  listFiles: authProcedure.query(async ({ ctx }) => {
+    const { session } = ctx
     const result = await dbClient.query.files.findMany({
+      where: eq(files.userId, session.userId),
       orderBy: [desc(files.createdAt)],
     })
     return result
@@ -71,10 +73,12 @@ export const fileRoutes = router({
       createdAt: z.string(),
     }).optional(),
     limit: z.number().default(10),
-  })).query(async ({ input }) => {
+  })).query(async ({ ctx, input }) => {
     const { cursor, limit } = input
+    const { session } = ctx
 
     const deletedAtFilter = isNull(files.deletedAt) // 过滤已删除的文件
+    const userFilter = eq(files.userId, session.userId) // 过滤不属于当前用户的文件
 
     const result = await dbClient
       .select()
@@ -85,8 +89,9 @@ export const fileRoutes = router({
           ? and(
             sql`("files"."created_at", "files"."id") < (${new Date(cursor.createdAt).toISOString()}, ${cursor.id})`,
             deletedAtFilter,
+            userFilter,
           )
-          : deletedAtFilter,
+          : and(deletedAtFilter, userFilter),
       )
       .orderBy(desc(files.createdAt))
 

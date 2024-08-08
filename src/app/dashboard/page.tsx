@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 import UploadBtnS3 from '@/components/upload-btn-s3'
 import { Dropzone } from '@/components/dropzone'
 import { useUppy } from '@/hooks/useUppy'
@@ -10,7 +11,6 @@ import { usePasteFile } from '@/hooks/usePasteFile'
 import { FileList } from '@/components/file-list'
 import { UploadPreview } from '@/components/upload-preview'
 import { ThemeButton } from '@/components/theme-button'
-import { Boxes } from '@/components/ui/background-boxes'
 
 export default function Dashboard() {
   // 状态要写在提前返回前
@@ -26,7 +26,7 @@ export default function Dashboard() {
   })
 
   // auth check
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   switch (status) {
     case 'loading':
       return <p>Loading...</p>
@@ -36,10 +36,10 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col items-center">
-      {/* <Boxes /> */}
       <div>
         <UploadBtnS3 uppy={uppy} />
         <ThemeButton />
+        <Link href="/dashboard/a">go a</Link>
       </div>
 
       <Dropzone uppy={uppy} className="my-4">

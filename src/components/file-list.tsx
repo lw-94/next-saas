@@ -10,8 +10,6 @@ export function FileList({
 }: {
   uppy: Uppy
 }) {
-  const { data: fileBaseUrl } = trpcClientReact.file.fileBaseUrl.useQuery()
-  // const { data: files } = trpcClientReact.file.listFiles.useQuery()
   const queryKey = {
     limit: 3,
   }
