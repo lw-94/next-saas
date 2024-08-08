@@ -11,6 +11,7 @@ import { usePasteFile } from '@/hooks/usePasteFile'
 import { FileList } from '@/components/file-list'
 import { UploadPreview } from '@/components/upload-preview'
 import { ThemeButton } from '@/components/theme-button'
+import { Button } from '@/components/ui/button'
 
 export default function AppPage({
   params: { id: appId },
@@ -33,17 +34,19 @@ export default function AppPage({
   const { status } = useSession()
   switch (status) {
     case 'loading':
-      return <p>Loading...</p>
+      return <p className="text-center">Loading...</p>
     case 'unauthenticated':
       redirect('/api/auth/signin')
   }
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex items-center">
+      <div className="mt-4 flex items-center gap-4">
         <UploadBtnS3 uppy={uppy} />
         <ThemeButton />
-        <Link href="/dashboard/a">go a</Link>
+        <Button asChild>
+          <Link href="/dashboard/apps/new">new app</Link>
+        </Button>
       </div>
 
       <Dropzone uppy={uppy} className="my-4">

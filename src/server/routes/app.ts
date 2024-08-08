@@ -1,3 +1,4 @@
+import { and, desc, eq, isNull } from 'drizzle-orm'
 import { createAppSchema } from '../db/validate-schema'
 import { dbClient } from '../db/db'
 import { apps } from '../db/schema'
@@ -15,5 +16,17 @@ export const appRouter = router({
       userId: session.userId,
     }).returning()
     return result[0]
+  }),
+
+  listApps: authProcedure.query(async ({ ctx }) => {
+    const { session } = ctx
+    const result = await dbClient.query.apps.findMany({
+      where: and(
+        eq(apps.userId, session.userId),
+        isNull(apps.deletedAt),
+      ),
+      orderBy: [desc(apps.createdAt)],
+    })
+    return result
   }),
 })
